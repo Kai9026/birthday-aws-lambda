@@ -4,6 +4,7 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.github.kai9026.birthday.model.Request;
 import com.github.kai9026.birthday.model.Response;
+import com.github.kai9026.birthday.model.Response.Status;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.Year;
@@ -22,7 +23,9 @@ public class BirthdayLambda implements RequestHandler<Request, Response> {
 
       birthDate = LocalDate.parse(input.getBirthDate());
     } catch (DateTimeException ex) {
-      return new Response().setError("Formato de fecha inválido. Requiere yyyy-MM-dd (1980-04-04)");
+      return new Response()
+          .setStatus(Status.INVALID_FORMAT_DATE)
+          .setError("Formato de fecha inválido. Requiere: yyyy-MM-dd");
     }
     return calculateDaysLeftToBirthdate(birthDate);
   }
@@ -38,6 +41,7 @@ public class BirthdayLambda implements RequestHandler<Request, Response> {
 
       final var days = ChronoUnit.DAYS.between(today, currentBirthdate);
       return new Response()
+          .setStatus(Status.SUCCESS)
           .setDaysLeft(days);
     } else {
 
@@ -47,6 +51,7 @@ public class BirthdayLambda implements RequestHandler<Request, Response> {
               original.getDayOfMonth());
       final var days = ChronoUnit.DAYS.between(today, nextBirthdate);
       return new Response()
+          .setStatus(Status.SUCCESS)
           .setDaysLeft(days);
     }
   }

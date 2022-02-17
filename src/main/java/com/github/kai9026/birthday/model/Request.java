@@ -9,9 +9,8 @@ public class Request {
     return birthDate;
   }
 
-  public Request setBirthDate(String birthDate) {
+  public void setBirthDate(String birthDate) {
 
     this.birthDate = birthDate;
-    return this;
   }
 }
