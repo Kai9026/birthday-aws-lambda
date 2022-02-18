@@ -10,10 +10,22 @@ jobs:
   deploy:
 
     runs-on: ubuntu-latest
+    env:
+      ## Environment variable
+      LAMBDA_ROLE_ARN: ${{secrets.LAMBDA_ARN_VARIABLE}}
 
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      - name: Run a one-line script
-        run: echo Hello, world!
+      - name: Setup Maven Action
+        uses: s4u/setup-maven-action@v1.3.1
+        with:
+          java-version: 11
+          
+      - name: Integration tests
+        run: mvn clean package -DskipTests
+        
+      - name: Deploy AWS Lambda
+        shell: sh
+        run: ./target/manage.sh create
