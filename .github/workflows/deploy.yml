@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ## Environment variable
-      LAMBDA_ROLE_ARN: ${{secrets.LAMBDA_ARN_VARIABLE}}
+      LAMBDA_ROLE_ARN: ${{secrets.LAMBDA_ARN_VAR}}
 
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
