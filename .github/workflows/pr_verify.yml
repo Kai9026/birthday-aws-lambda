@@ -21,4 +21,5 @@ jobs:
         with:
           java-version: 11
           
-      - run: mvn clean test
+      - name: Integration tests
+        run: mvn clean test
