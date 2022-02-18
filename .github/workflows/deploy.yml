@@ -10,6 +10,7 @@ jobs:
   deploy:
 
     runs-on: ubuntu-latest
+    name: Deploy AWS Lambda
     env:
       ## Environment variable
       LAMBDA_ROLE_ARN: ${{secrets.LAMBDA_ARN_VAR}}
@@ -23,9 +24,14 @@ jobs:
         with:
           java-version: 11
           
-      - name: Integration tests
+      - name: Build artifact
         run: mvn clean package -DskipTests
         
-      - name: Deploy AWS Lambda
-        shell: sh
-        run: ./target/manage.sh create
+      - name: Deploy zip function to AWS Lambda
+        uses: appleboy/lambda-action@master
+        with:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          function_name: BirthdayAwsLambda
+          zip_file: ./target/function.zip
