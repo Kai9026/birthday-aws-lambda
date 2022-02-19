@@ -11,6 +11,10 @@ jobs:
 
     runs-on: ubuntu-latest
     name: Deploy AWS Lambda
+    env:
+      ## Environment variable
+      LAMBDA_ROLE_ARN: ${{ secrets.LAMBDA_ARN_VAR }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
 
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -24,14 +28,6 @@ jobs:
       - name: Build artifact
         run: mvn clean package -DskipTests
         
-      - name: Deploy zip function to AWS Lambda
-        uses: appleboy/lambda-action@master
-        with:
-          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws_region: ${{ secrets.AWS_REGION }}
-          function_name: BirthdayAwsLambda
-          handler: com.github.kai9026.birthday.BirthdayLambda.handleRequest
-          zip_file: target/function.zip
-          role: ${{secrets.LAMBDA_ARN_VAR}}
-          runtime: java11
+      - name: Deploy AWS Lambda
+        shell: sh
+        run: ./target/manage.sh create
